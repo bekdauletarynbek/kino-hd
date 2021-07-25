@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full items-center flex  bg-header-bg justify-between px-16">
+  <div class="w-full items-center flex justify-between px-16 transition duration 2000" :class="bgColor">
     <svg fill="#FFF" width="203px" height="36px" viewBox="0 0 203 36" version="1.1" xmlns="http://www.w3.org/2000/svg"
          xmlns:xlink="http://www.w3.org/1999/xlink" class="Header__logo-icon--mH_yi" data-tid="be53a399">
       <path fill-rule="evenodd" clip-rule="evenodd"
@@ -10,10 +10,10 @@
             fill="#FF6600"></path>
     </svg>
     <div class="list py-5 flex items-center">
-      <nav-item link="/" text="Мое кино"/>
-      <nav-item link="/buy" text="Магазин"/>
-      <nav-item link="/watchlist" text="Буду смотреть"/>
-      <nav-item link="/purchases" text="Покупка"/>
+      <nav-item link="Home" text="Мое кино"/>
+      <nav-item link="Buy" text="Магазин"/>
+      <nav-item link="List" text="Буду смотреть"/>
+      <nav-item link="Purchase" text="Покупка"/>
       <svg width="1.5rem" height="1.5rem" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
            xmlns:xlink="http://www.w3.org/1999/xlink"
            class="HeaderContent__icon--39VdR SearchButton__search-icon--2cYx5 ml-5" data-tid="12e1b679">
@@ -33,6 +33,9 @@ export default {
   name: "navbar",
   components: {
     navItem
+  },
+  props: {
+    bgColor: String
   }
 }
 </script>

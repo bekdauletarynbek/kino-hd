@@ -5,6 +5,11 @@ module.exports = {
     ],
     darkMode: false, // or 'media' or 'class'
     theme: {
+        textColor: theme=> ({
+            ...theme('colors'),
+            'overview': '#f5f3f4',
+
+        }),
         extend: {
             height: {
                 "10v": "10vh",
@@ -17,16 +22,19 @@ module.exports = {
                 "80v": "80vh",
                 "90v": "90vh",
                 "100v": "100vh",
+                "120v": "120vh"
             },
         },
         backgroundColor: theme=> ({
             ...theme('colors'),
             'header-bg': '#1f1f1f',
-            'content-bg': '#141414'
+            'content-bg': '#141414',
+            'button-play': '#f60'
         })
     },
     variants: {
-        extend: {},
+        extend: {
+        },
     },
     plugins: [],
 }

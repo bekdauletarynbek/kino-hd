@@ -1,9 +1,9 @@
 <template>
   <div>
-    <router-link :to="{name: 'movie', params: {id: movie.id}}" class="relative">
-      <img class="rounded" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="">
+    <router-link :to="{name: 'tv', params: {id: tv.id}}">
+      <img class="rounded relative" :src="`https://image.tmdb.org/t/p/w200/${tv.poster_path}`" alt="">
       <span class="absolute top-1 left-1 px-2 "
-            :class="movieStatus(movie.vote_average)">{{ movie.vote_average.toFixed(1) }}</span>
+            :class="movieStatus(tv.vote_average)">{{ tv.vote_average.toFixed(1) }}</span>
     </router-link>
   </div>
 </template>
@@ -14,7 +14,7 @@ export default {
   name: "movie",
   mixins: [movieStatus],
   props: {
-    movie: Object
+    tv: Object
   },
   methods: {
   }

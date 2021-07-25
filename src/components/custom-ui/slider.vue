@@ -1,49 +1,63 @@
 <template>
-  <div class="splide" :cls="cls">
-    <div class="splide__track">
-      <div class="splide__arrows">
-        <div class="splide__arrows splide__arrows-prev">
-          <svg width="17" height="36" viewBox="0 0 17 36" fill="none" xmlns="http://www.w3.org/2000/svg"
-               data-tid="75eaaec3" style="transform: rotate(180deg);">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M5.5001 17.9998L16.6001 3.1998L13.4001 0.799805L0.500097 17.9998L13.4001 35.1998L16.6001 32.7998L5.5001 17.9998Z"
-                  fill="white"></path>
-          </svg>
-        </div>
-      </div>
-      <div class="splide__arrows  splide__arrows-next">
-        <svg width="17" height="36" viewBox="0 0 17 36" fill="none" xmlns="http://www.w3.org/2000/svg"
-             data-tid="75eaaec3">
-          <path fill-rule="evenodd" clip-rule="evenodd"
-                d="M5.5001 17.9998L16.6001 3.1998L13.4001 0.799805L0.500097 17.9998L13.4001 35.1998L16.6001 32.7998L5.5001 17.9998Z"
-                fill="white"></path>
-        </svg>
-      </div>
-      <div class="splide__track">
-        <ul class="splide__list">
-          <card v-for="movie in movies" :key="movie.id" :movie="movie" class="splide__slide"></card>
-        </ul>
-      </div>
-    </div>
+  <div class="my-10">
+  <p class="text-left ml-5 pl-8 font-bold text-xl text-gray-50 my-3">{{cls}}</p>
+
+  <splide class="splide mx-5 px-8" :slides="data" :options="options">
+      <splide-slide v-for="item in data"  :key="item.id">
+          <movie v-if="type==='movie'" :movie="item" class="splide__slide1" @click.native="select(id)"></movie>
+          <tv v-else :tv="item" class="splide__slide1" @click.native="select(id)"></tv>
+      </splide-slide>
+  </splide>
   </div>
 </template>
 
 <script>
 import movie from '../movie'
+import tv from '../tv'
 export default {
   name: "slider",
+  data() {
+    return {
+      options: {
+        rewind: true,
+        perPage: 5,
+        gap: '1.1rem',
+        pagination: false
+      },
+      data: []
+    }
+  },
   props: {
     cls: String,
-    movies: Array
+    type: String,
+    category: String,
+    id: Number,
+    request: String
   },
   components: {
-    movie
+    movie,
+    tv
   },
-  mounted() {
+  async mounted() {
+    if(this.type ==='movie')
+      this.data = await this.$store.dispatch(this.request, this.category)
+    if(this.type === 'tv')
+      this.data = await this.$store.dispatch(this.request, this.category)
+  },
+  methods:{
+    select(id) {
+      console.log(id)
+      this.$emit('select', this.id)
+    }
   }
 }
 </script>
 
-<style scoped>
-
+<style >
+.splide__list li:hover{
+  transform: scale(1.03);
+}
+.splide__list li{
+  transition: all .5s;
+}
 </style>
