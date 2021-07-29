@@ -1,10 +1,10 @@
 <template>
 <div class="">
-  <banner :id="379686"></banner>
+  <banner :id="getIdForBanner()"></banner>
   <div v-for="(item, id) in list" :key="item.key">
     <slider :type="'movie'" :category="item.key" :cls="item.value" @select="select" :id="id" request="movies/getMovies"></slider>
     <transition name="bottom-slide">
-      <router-view v-if="slide===id"></router-view>
+      <router-view v-if="slide === id"></router-view>
     </transition>
   </div>
   <div>
@@ -13,7 +13,7 @@
   <div v-for="(item, id) in listTV" :key="item.key">
     <slider :type="'tv'" :category="item.key" :cls="item.value" @select="select" :id="id+4" request="tv/getTVs"></slider>
     <transition name="bottom-slide">
-      <router-view v-if="slide===id+4"></router-view>
+      <router-view v-if="slide === id"></router-view>
     </transition>
   </div>
 
@@ -38,7 +38,8 @@ export default {
         {key: 'popular', value: 'Популярное'},
         {key: 'top_rated', value: 'ТОП'},
       ],
-      slide: null
+      slide: null,
+      params: null
     }
   },
   components: {
@@ -47,6 +48,11 @@ export default {
     genres
   },
   computed: {
+
+  },
+  mounted() {
+    if(this.$route.params.id)
+    this.slide = +this.$route.params.id.split('-')[1];
   },
   methods:{
     getMovies(type) {
@@ -55,6 +61,14 @@ export default {
     },
     select(id) {
       this.slide = id;
+    },
+    getIdForBanner() {
+      if(this.$route.params.id) {
+        let params = this.$route.params.id?.split('-')
+        if (+params[0] > 1) return;
+        return +params[0];
+      }
+      return 497698
     }
   },
   async updated() {

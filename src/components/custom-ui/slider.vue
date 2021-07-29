@@ -4,8 +4,8 @@
 
   <splide class="splide mx-5 px-8" :slides="data" :options="options">
       <splide-slide v-for="item in data"  :key="item.id">
-          <movie v-if="type==='movie'" :movie="item" class="splide__slide1" @click.native="select(id)"></movie>
-          <tv v-else :tv="item" class="splide__slide1" @click.native="select(id)"></tv>
+          <movie v-if="type==='movie'" :movie="item" class="splide__slide1" :id="id" @click.native="select(id)"></movie>
+          <tv v-else :tv="item" class="splide__slide1" :id="id" @click.native="select(id)"></tv>
       </splide-slide>
   </splide>
   </div>

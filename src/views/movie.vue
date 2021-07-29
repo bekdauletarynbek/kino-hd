@@ -109,19 +109,23 @@ export default {
       detailPage: 0
     }
   },
-  computed: {},
+  computed: {
+    getParams() {
+      return this.$route.params.id.split('-');
+    }
+  },
   watch: {
     async $route(to, from) {
       if (to !== from) {
-        this.movie = await this.$store.dispatch('movies/getMovie', this.$route.params.id);
-        this.video = await this.$store.dispatch('movies/getMovieVideo', this.$route.params.id);
+        this.movie = await this.$store.dispatch('movies/getMovie', this.getParams[0]);
+        this.video = await this.$store.dispatch('movies/getMovieVideo', this.getParams[0]);
         this.detailPage = 0;
       }
     },
   },
   async mounted() {
-    this.movie = await this.$store.dispatch('movies/getMovie', this.$route.params.id);
-    this.video = await this.$store.dispatch('movies/getMovieVideo', this.$route.params.id);
+    this.movie = await this.$store.dispatch('movies/getMovie', this.getParams[0]);
+    this.video = await this.$store.dispatch('movies/getMovieVideo', this.getParams[0]);
   },
   methods: {
 
