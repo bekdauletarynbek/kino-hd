@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import movieStatus from "../services/movieStatus";
+import movieStatus from "@/services/movieStatus";
 import YoutubeVue from "../components/YoutubeVue";
 import navItemMovie from '../components/custom-ui/nav-item-movie'
 import Details from "../components/details";

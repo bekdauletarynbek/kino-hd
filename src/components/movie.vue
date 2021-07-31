@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import movieStatus from "../services/movieStatus";
+import movieStatus from "@/services/movieStatus";
 export default {
   name: "movie",
   mixins: [movieStatus],
