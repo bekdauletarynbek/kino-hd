@@ -5,13 +5,13 @@ import store from './store'
 import './assets/tailwind.css';
 import VueSplide from "@splidejs/vue-splide";
 import '@splidejs/splide/dist/css/themes/splide-default.min.css';
-// import VueYT from 'youtube-vue'
+import VueHead from "vue-head";
 
 Vue.config.productionTip = false
 
 Vue.use(VueSplide)
 
-// Vue.use(VueYT)
+Vue.use(VueHead);
 
 new Vue({
   router,

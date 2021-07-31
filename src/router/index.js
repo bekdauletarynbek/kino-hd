@@ -23,7 +23,6 @@ const routes = [
         component: category
       }
     ]
-
   },
   {
     path: '/buy',

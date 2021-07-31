@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <router-link :to="{name: 'movie', params: {id: `${movie.id}-${id}`}}" class="relative">
-      <img class="rounded" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="">
-      <span class="absolute top-1 left-1 px-2 "
-            :class="movieStatus(movie.vote_average)">{{ movie.vote_average.toFixed(1) }}</span>
+    <router-link :to="{name: 'movie', params: {id: `${movie.id}${id ? `-${id}` : ''}`}}" class="relative">
+        <img class="rounded" :src="`https://image.tmdb.org/t/p/w200/${movie.poster_path}`" alt="">
+        <span class="absolute top-1 left-1 px-2 "
+              :class="movieStatus(movie.vote_average)">{{ movie.vote_average.toFixed(1) }}</span>
     </router-link>
-  </div>
 </template>
 
 <script>

@@ -13,10 +13,10 @@
   <div v-for="(item, id) in listTV" :key="item.key">
     <slider :type="'tv'" :category="item.key" :cls="item.value" @select="select" :id="id+4" request="tv/getTVs"></slider>
     <transition name="bottom-slide">
-      <router-view v-if="slide === id"></router-view>
+      <router-view v-if="slide === id +4"></router-view>
     </transition>
   </div>
-
+  <collections></collections>
 </div>
 </template>
 
@@ -24,6 +24,7 @@
 import banner from '../components/custom-ui/banner'
 import slider from '../components/custom-ui/slider'
 import genres from '@/components/genres'
+import collections from "../components/collections";
 export default {
   name: "index",
   data() {
@@ -45,7 +46,8 @@ export default {
   components: {
     banner,
     slider,
-    genres
+    genres,
+    collections
   },
   computed: {
 
@@ -63,12 +65,7 @@ export default {
       this.slide = id;
     },
     getIdForBanner() {
-      if(this.$route.params.id) {
-        let params = this.$route.params.id?.split('-')
-        if (+params[0] > 1) return;
-        return +params[0];
-      }
-      return 497698
+      return this.$route.params.id ||497698
     }
   },
   async updated() {

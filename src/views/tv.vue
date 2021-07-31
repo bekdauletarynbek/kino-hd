@@ -53,8 +53,10 @@
 </g>
 </svg>
     <div class="absolute flex w-full justify-center z-30 top-4 ">
-      <nav-item-movie class="mr-4" name="О фильме" :status="detailPage === 0" @click.native="detailPage = 0; mute = true"/>
-      <nav-item-movie class="mr-4" name="Сезоны и серии" :status="detailPage === 1" @click.native="detailPage = 1; mute = true"/>
+      <nav-item-movie class="mr-4" name="О фильме" :status="detailPage === 0"
+                      @click.native="detailPage = 0; mute = true"/>
+      <nav-item-movie class="mr-4" name="Сезоны и серии" :status="detailPage === 1"
+                      @click.native="detailPage = 1; mute = true"/>
       <nav-item-movie name="Детали" :status="detailPage === 2" @click.native="detailPage = 2"/>
     </div>
 
@@ -63,7 +65,7 @@
       <div class="flex  items-center">
         <img class="w-40 rounded" :src="`https://image.tmdb.org/t/p/w300${movie.poster_path}`" alt="">
         <div class=" text-white ml-5 fans-serif text-left">
-          <p class="whitespace-pre-line font-bold text-3xl mb-3"> {{ movie.title }} </p>
+          <p class="whitespace-pre-line font-bold text-3xl mb-3"> {{ movie.name }} </p>
           <div class="text-gray-400	w-96">
             <span :class="movieStatus(movie.vote_average)" class="mr-2">{{ movie.vote_average.toFixed(1) }}</span>
             <span>{{ movie.first_air_date.split('-')[0] }}</span>
@@ -85,7 +87,8 @@
     <transition name="slide-fade">
       <Details v-if="detailPage===2" class="absolute top-20 left-0 z-40" :data="movie"></Details>
     </transition>
-    <div @click="muteOrUnmute" v-if=  "video && detailPage ===0" class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">
+    <div @click="muteOrUnmute" v-if="video && detailPage ===0"
+         class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">
       <img v-if="!mute" :src="require('@/assets/mute.svg')" alt="">
       <img v-else :src="require('@/assets/unmute.svg')" alt="">
     </div>
@@ -98,6 +101,7 @@ import YoutubeVue from "../components/YoutubeVue";
 import navItemMovie from '../components/custom-ui/nav-item-movie'
 import Details from "../components/details";
 import Seasons from "../components/seasons";
+
 export default {
   name: "movie",
   mixins: [movieStatus],
@@ -107,6 +111,27 @@ export default {
     navItemMovie,
     Details
   },
+  head: {
+    title: function () {
+      return {
+        inner: this.movie.name
+      }
+    },
+    meta: function () {
+      return [
+        {name: 'application-name', content: 'KinoPoiskHD'},
+        {name: 'description', content: this.movie.overview, id: 'desc'},
+        {name: 'twitter:title', content: `${this.movie.name}-KinoHD`},
+        // with shorthand
+        {n: 'twitter:description', c: `${this.movie.overview}-KinoHD`},
+        // Google+ / Schema.org
+        {itemprop: 'name', content: this.movie.name},
+        {itemprop: 'description', content: `${this.movie.overview}-KinoHD`},
+        // Facebook / Open Graph
+        {property: 'og:title', content: this.movie.name},
+      ]
+    }
+  },
   data() {
     return {
       movie: {},
@@ -115,7 +140,11 @@ export default {
       detailPage: 0
     }
   },
-  computed: {},
+  computed: {
+    getParams() {
+      return this.$route.params.id.split('-');
+    }
+  },
   watch: {
     async $route(to, from) {
       if (to !== from) {
@@ -160,8 +189,10 @@ export default {
 .slide-fade-enter-active {
   transition: all .3s ease;
 }
+
 .slide-fade-enter, .slide-fade-leave-to
-  /* .slide-fade-leave-active до версии 2.1.8 */ {
+  /* .slide-fade-leave-active до версии 2.1.8 */
+{
   transform: translateY(20px);
   opacity: 0;
 }

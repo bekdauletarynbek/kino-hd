@@ -5,10 +5,9 @@
    </div>
    <div class="inform text-left mt-4 font-medium">
       <span class="mr-4">Сезон</span>
-        <span v-for="(item, id) in data.seasons" :key="item.id" @click="season=id" :class="season === id ? 'bg-gray-600' : ''">{{id}}</span>
+        <span v-for="item in data.seasons" :key="item.id" @click="season=item.season_number" :class="season === item.season_number ? 'bg-gray-600' : ''">{{item.season_number}}</span>
    </div>
     <serial class="mt-5 h-20v" :season="season" :id="data.id"></serial>
-
   </div>
 </template>
 
@@ -18,11 +17,15 @@ export default {
   name: "seasons",
   data() {
     return {
-      season: 1
+      season: 1,
+      add: 0,
     }
   },
   props: {
     data: Object
+  },
+  mounted() {
+    console.log(this.data)
   },
   components: {
     serial

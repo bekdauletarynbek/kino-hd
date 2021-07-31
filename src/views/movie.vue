@@ -53,7 +53,8 @@
 </g>
 </svg>
     <div class="absolute flex w-full justify-center z-30 top-4 ">
-      <nav-item-movie class="mr-4" name="О фильме" :status="detailPage === 0" @click.native="detailPage = 0; mute = true"/>
+      <nav-item-movie class="mr-4" name="О фильме" :status="detailPage === 0"
+                      @click.native="detailPage = 0; mute = true"/>
       <nav-item-movie name="Детали" :status="detailPage === 1" @click.native="detailPage = 1"/>
     </div>
 
@@ -81,7 +82,8 @@
     <transition name="slide-fade">
       <Details v-if="detailPage!==0" class="absolute top-20 left-0 z-40" :data="movie"></Details>
     </transition>
-    <div @click="muteOrUnmute" v-if=  "video && detailPage ===0" class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">
+    <div @click="muteOrUnmute" v-if="video && detailPage ===0"
+         class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">
       <img v-if="!mute" :src="require('@/assets/mute.svg')" alt="">
       <img v-else :src="require('@/assets/unmute.svg')" alt="">
     </div>
@@ -93,6 +95,7 @@ import movieStatus from "../services/movieStatus";
 import YoutubeVue from "../components/YoutubeVue";
 import navItemMovie from '../components/custom-ui/nav-item-movie'
 import Details from "../components/details";
+
 export default {
   name: "movie",
   mixins: [movieStatus],
@@ -104,9 +107,31 @@ export default {
   data() {
     return {
       movie: {},
+      text: 'some',
       video: null,
       mute: true,
       detailPage: 0
+    }
+  },
+  head: {
+    title: async function () {
+      return {
+        inner: this.movie.title
+      }
+    },
+    meta: function () {
+      return [
+        {name: 'application-name', content: 'KinoPoiskHD'},
+        {name: 'description', content: this.movie.overview, id: 'desc'},
+        {name: 'twitter:title', content: `${this.movie.title}-KinoHD`},
+        // with shorthand
+        {n: 'twitter:description', c: `${this.movie.overview}-KinoHD`},
+        // Google+ / Schema.org
+        {itemprop: 'name', content: this.movie.title},
+        {itemprop: 'description', content: `${this.movie.overview}-KinoHD`},
+        // Facebook / Open Graph
+        {property: 'og:title', content: this.movie.title},
+      ]
     }
   },
   computed: {
@@ -119,13 +144,16 @@ export default {
       if (to !== from) {
         this.movie = await this.$store.dispatch('movies/getMovie', this.getParams[0]);
         this.video = await this.$store.dispatch('movies/getMovieVideo', this.getParams[0]);
+        this.$emit('updateHead')
         this.detailPage = 0;
       }
     },
   },
   async mounted() {
+    let self = this;
     this.movie = await this.$store.dispatch('movies/getMovie', this.getParams[0]);
     this.video = await this.$store.dispatch('movies/getMovieVideo', this.getParams[0]);
+    self.$emit('updateHead')
   },
   methods: {
 
@@ -158,8 +186,10 @@ export default {
 .slide-fade-enter-active {
   transition: all .3s ease;
 }
+
 .slide-fade-enter, .slide-fade-leave-to
-  /* .slide-fade-leave-active до версии 2.1.8 */ {
+  /* .slide-fade-leave-active до версии 2.1.8 */
+{
   transform: translateY(20px);
   opacity: 0;
 }

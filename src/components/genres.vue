@@ -3,9 +3,9 @@
     <p class="text-left ml-5 font-bold text-xl text-gray-50 my-3">Жанры фильмов</p>
 <splide  :slides="genres" :options="options">
   <splide-slide v-for="(item, id) in genres" :key="item.id">
-    <div>
+    <router-link :to="{name: 'category', params: {id: `${item.id}-${item.name}`}}">
     <span class=" py-14 text-2xl flex items-center justify-center rounded font-sans" :style="{backgroundColor:  randomColor()[id]}">{{item.name}}</span>
-    </div>
+    </router-link>
   </splide-slide>
 </splide>
   </div>
