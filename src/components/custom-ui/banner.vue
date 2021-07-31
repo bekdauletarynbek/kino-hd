@@ -4,7 +4,7 @@
        :style="`background-image: url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`">
     <div  v-if="video1 && isShow">
     <vue-youtube ref="youtubes" :videoid="video1" :autoplay="1"
-                 class="absolute  -top-28 h-120v w-full " :controls="1" :rel="0" :fs="0"
+                 class="absolute  -top-24 h-120v w-full " :controls="1" :rel="0" :fs="0"
                  :loop="1" :playlist="video1" @played="isShow = true"/>
     </div>
   </div>
