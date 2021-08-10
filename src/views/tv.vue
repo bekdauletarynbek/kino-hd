@@ -82,10 +82,10 @@
       </button>
     </div>
     <transition name="slide-fade">
-      <seasons v-if="detailPage===1" class="absolute top-20 left-0 z-40" :data="movie"></seasons>
+      <seasons v-if="detailPage===1" class="absolute top-20 left-0 z-30" :data="movie"></seasons>
     </transition>
     <transition name="slide-fade">
-      <Details v-if="detailPage===2" class="absolute top-20 left-0 z-40" :data="movie"></Details>
+      <Details v-if="detailPage===2" class="absolute top-20 left-0 z-30" :data="movie"></Details>
     </transition>
     <div @click="muteOrUnmute" v-if="video && detailPage ===0"
          class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">

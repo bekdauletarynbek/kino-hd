@@ -19,6 +19,7 @@ export default {
   },
   created() {
     window.addEventListener('scroll', this.setColor)
+    this.setColor()
   },
   destroyed() {
     window.removeEventListener('scroll', this.setColor)
@@ -30,7 +31,7 @@ export default {
       if(window) {
         const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
         if(currentScrollPosition <= 50) this.color = 'transparent '
-        if(currentScrollPosition > 50) this.color = 'bg-header-bg'
+        if(currentScrollPosition > 50 || this.$route.name !== 'Home') this.color = 'bg-header-bg'
       }
     }
   }

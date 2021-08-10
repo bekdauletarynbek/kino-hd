@@ -1,5 +1,5 @@
 <template>
-  <div class="relative  h-90v overflow-hidden">
+  <div class="relative  h-90v overflow-hidden z-0">
     <div class=" h-90v bg-right bg-no-repeat bg-contain z-0 relative  overflow-hidden"
          :class="detailPage !== 0 ? 'filter blur-3xl brightness-50 transition duration 300' : ''"
          :style="`background-image: url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`">
@@ -134,7 +134,8 @@ export default {
   },
   computed: {
     getParams() {
-      return this.$route.params.id.split('-');
+      let id = this.$route.params.id.toString();
+      return id.split('-');
     }
   },
   watch: {

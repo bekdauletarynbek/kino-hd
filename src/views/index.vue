@@ -1,19 +1,22 @@
 <template>
 <div class="">
-  <banner :id="getIdForBanner()"></banner>
+  <router-view class="mt-16" v-if="$route.name !== 'Home' && slide === 0"></router-view>
+  <banner v-else :id="getIdForBanner()" :type="$route.name !== 'Home' ? $route.name : 'movie'"></banner>
+  {{$route.name}}
   <div v-for="(item, id) in list" :key="item.key">
-    <slider :type="'movie'" :category="item.key" :cls="item.value" @select="select" :id="id" request="movies/getMovies"></slider>
+    <slider :type="'movie'" :category="item.key" :cls="item.value" @select="select" :id="id+1" request="movies/getMovies"></slider>
     <transition name="bottom-slide">
-      <router-view v-if="slide === id"></router-view>
+      <router-view v-if="slide === id +1"></router-view>
     </transition>
   </div>
   <div>
   <genres />
-</div>
+  <search></search>
+  </div>
   <div v-for="(item, id) in listTV" :key="item.key">
-    <slider :type="'tv'" :category="item.key" :cls="item.value" @select="select" :id="id+4" request="tv/getTVs"></slider>
+    <slider :type="'tv'" :category="item.key" :cls="item.value" @select="select" :id="id+5" request="tv/getTVs"></slider>
     <transition name="bottom-slide">
-      <router-view v-if="slide === id +4"></router-view>
+      <router-view v-if="slide === id +5"></router-view>
     </transition>
   </div>
   <collections></collections>
@@ -25,6 +28,7 @@ import banner from '../components/custom-ui/banner'
 import slider from '../components/custom-ui/slider'
 import genres from '@/components/genres'
 import collections from "../components/collections";
+import search from "@/components/seacrh";
 export default {
   name: "index",
   data() {
@@ -40,14 +44,28 @@ export default {
         {key: 'top_rated', value: 'ТОП'},
       ],
       slide: null,
-      params: null
+      params: null,
+      id: null
     }
   },
   components: {
     banner,
     slider,
     genres,
-    collections
+    collections,
+    search
+  },
+  watch:{
+    $route(to, from) {
+      if(to !== from) {
+        let id = to.params.id.toString()
+        if(id.split('-').length > 1)
+        this.slide = id.split('-')[1]
+        else {
+          this.slide = 0;
+        }
+      }
+    }
   },
   computed: {
 
@@ -55,17 +73,20 @@ export default {
   mounted() {
     if(this.$route.params.id)
     this.slide = +this.$route.params.id.split('-')[1];
+    console.log(this.$route)
   },
   methods:{
     getMovies(type) {
       console.log(this.$store.state.movies[type])
-      return this.$store.state.movies[type]
+      return this.$store.state.movies[type];
     },
     select(id) {
+      console.log(id)
       this.slide = id;
     },
     getIdForBanner() {
-      return this.$route.params.id ||497698
+      this.id =  +this.$route.params.id || 497698;
+      return this.id;
     }
   },
   async updated() {

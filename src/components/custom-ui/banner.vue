@@ -44,16 +44,17 @@ export default {
     }
   },
   props: {
-    id: Number
+    id: Number,
+    type: String
   },
   components: {
     VueYoutube
   },
   async mounted() {
-    let {data} = await ahttp.get(`/movie/${this.id}?${api}`);
+    let {data} = await ahttp.get(`/${this.type}/${this.id}?${api}`);
     console.log(data)
     this.movie = data;
-    let videos  = await ahttp.get(`/movie/${this.id}/videos?${api}`);
+    let videos  = await ahttp.get(`/${this.type}/${this.id}/videos?${api}`);
     this.video1 = videos.data.results[0].key;
 
   },
