@@ -2,7 +2,7 @@
 <div class="text-left item">
   <img  class="splide__slide rounded" :src="`https://image.tmdb.org/t/p/w500${item.still_path}`" alt="">
   <p class="mt-1">{{id}}. {{item.name}}</p>
-  <p class="text-xs text-gray-400">{{item.overview}}</p>
+  <p class="text-xs text-gray-400">{{item.overview.split(' ').slice(0, 25).join(' ')}}...</p>
 </div>
 </template>
 

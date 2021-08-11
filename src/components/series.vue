@@ -1,7 +1,7 @@
 <template>
   <div>
   <splide :slides="movie.episodes" :options="options">
-    <splide-slide  class="mx-5 " v-for="(item, id) in movie.episodes" :key="item.id">
+    <splide-slide  class="mx-5 px-2" v-for="(item, id) in movie.episodes" :key="item.id">
           <tv-episode :item="item" :id="id+1"></tv-episode>
     </splide-slide>
   </splide>

@@ -28,13 +28,13 @@ export default {
             data = await ahttp.get(`/movie/popular?${api}&with_genres=${genreId}`)
             return data.data.results;
         },
-        async getMovie(context, id) {
-            let {data} = await ahttp.get(`/movie/${id}?${api}&append_to_response=credits`)
+        async getMovie(context, {id, type}) {
+            let {data} = await ahttp.get(`/${type}/${id}?${api}&append_to_response=credits`)
             console.log(data)
             return data
         },
-        async getMovieVideo(context, id) {
-            let {data} = await ahttp.get(`/movie/${id}/videos?${api}`)
+        async getMovieVideo(context, {id, type}) {
+            let {data} = await ahttp.get(`/${type}/${id}/videos?${api}`)
             console.log(data.results)
             if(!data.results.length) return null;
             return data.results[0].key

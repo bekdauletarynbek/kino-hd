@@ -1,8 +1,7 @@
 <template>
 <div class="">
-  <router-view class="mt-16" v-if="$route.name !== 'Home' && slide === 0"></router-view>
+  <router-view class="mt-16" v-if="$route.name !== 'Home' && !slide"></router-view>
   <banner v-else :id="getIdForBanner()" :type="$route.name !== 'Home' ? $route.name : 'movie'"></banner>
-  {{$route.name}}
   <div v-for="(item, id) in list" :key="item.key">
     <slider :type="'movie'" :category="item.key" :cls="item.value" @select="select" :id="id+1" request="movies/getMovies"></slider>
     <transition name="bottom-slide">

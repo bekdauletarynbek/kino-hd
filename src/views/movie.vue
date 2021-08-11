@@ -8,7 +8,7 @@
                    :loop="1" :playlist="video"/>
     </div>
     <svg @click="$router.push({name: 'Home'})"
-         class="absolute top-5 right-10 w-6 hover:text-white fill-current white transition duration 600 z-40"
+         class="absolute top-5 right-10 w-6 z-40" fill="white"
          version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
          y="0px"
          viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512.001 512.001" xml:space="preserve">
@@ -55,7 +55,9 @@
     <div class="absolute flex w-full justify-center z-30 top-4 ">
       <nav-item-movie class="mr-4" name="О фильме" :status="detailPage === 0"
                       @click.native="detailPage = 0; mute = true"/>
-      <nav-item-movie name="Детали" :status="detailPage === 1" @click.native="detailPage = 1"/>
+      <nav-item-movie v-if="$route.name === 'tv'" class="mr-4" name="Сезоны и серии" :status="detailPage === 1"
+                      @click.native="detailPage = 1; mute = true"/>
+      <nav-item-movie name="Детали" :status="detailPage === 2" @click.native="detailPage = 2"/>
     </div>
 
     <div class="ft z-10"></div>
@@ -63,25 +65,29 @@
       <div class="flex  items-center">
         <img class="w-40 rounded" :src="`https://image.tmdb.org/t/p/w300${movie.poster_path}`" alt="">
         <div class=" text-white ml-5 fans-serif text-left">
-          <p class="whitespace-pre-line font-bold text-3xl mb-3"> {{ movie.title }} </p>
+          <p class="whitespace-pre-line font-bold text-3xl mb-3"> {{ movie.title || movie.name}} </p>
           <div class="text-gray-400	w-96">
             <span :class="movieStatus(movie.vote_average)" class="mr-2">{{ movie.vote_average.toFixed(1) }}</span>
-            <span>{{ movie.release_date.split('-')[0] }}</span>
+            <span>{{ $route.name !== 'movie' ? movie.first_air_date.split('-')[0] : movie.release_date.split('-')[0] }}</span>
             <span v-for="genre in movie.genres.slice(0,2)" :key="genre.id"> {{ genre.name }} </span>
-            <span>{{ checkRun(movie.runtime) }}</span>
+            <span>{{$route.name === 'movie' ?  checkRun(movie.runtime) : movie.seasons.length + ' сезонов'}}</span>
           </div>
         </div>
       </div>
       <div class="text-overview font-sans mt-5 leading-6 text-left">
         {{ movie.overview.split(' ').splice(0, 30).join(' ') }}...
       </div>
-      <button class="bg-button-play text-white p-3 rounded items-center flex mt-3"><img
-          :src="require('@/assets/play.svg')" class="w-4 inline mr-2">Смотреть фильм
+      <button class="bg-button-play text-white p-3 rounded items-center flex mt-3">
+        <img
+          :src="require('@/assets/play.svg')" class="w-4 inline mr-2" alt=""/>Смотреть фильм
       </button>
     </div>
     <transition name="slide-fade">
-      <Details v-if="detailPage!==0" class="absolute top-20 left-0 z-40" :data="movie"></Details>
+      <seasons v-if="detailPage===1" class="absolute top-20 left-0 z-30" :data="movie"></seasons>
     </transition>
+    <transition name="slide-fade">
+    <Details v-if="detailPage===2" class="absolute top-20 left-0 z-30" :data="movie"></Details>
+  </transition>
     <div @click="muteOrUnmute" v-if="video && detailPage ===0"
          class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">
       <img v-if="!mute" :src="require('@/assets/mute.svg')" alt="">
@@ -91,16 +97,18 @@
 </template>
 
 <script>
-import YoutubeVue from "../components/YoutubeVue";
-import navItemMovie from '../components/custom-ui/nav-item-movie'
-import Details from "../components/details";
+import YoutubeVue from "@/components/YoutubeVue";
+import navItemMovie from '@/components/custom-ui/nav-item-movie'
+import Details from "@/components/details";
+import seasons from "@/components/seasons";
 
 export default {
   name: "movie",
   components: {
     YoutubeVue,
     navItemMovie,
-    Details
+    Details,
+    seasons
   },
   data() {
     return {
@@ -114,23 +122,9 @@ export default {
   head: {
     title: async function () {
       return {
-        inner: this.movie.title
+        inner: this.movie.title || this.movie.name
       }
     },
-    meta: function () {
-      return [
-        {name: 'application-name', content: 'KinoPoiskHD'},
-        {name: 'description', content: this.movie.overview, id: 'desc'},
-        {name: 'twitter:title', content: `${this.movie.title}-KinoHD`},
-        // with shorthand
-        {n: 'twitter:description', c: `${this.movie.overview}-KinoHD`},
-        // Google+ / Schema.org
-        {itemprop: 'name', content: this.movie.title},
-        {itemprop: 'description', content: `${this.movie.overview}-KinoHD`},
-        // Facebook / Open Graph
-        {property: 'og:title', content: this.movie.title},
-      ]
-    }
   },
   computed: {
     getParams() {
@@ -141,21 +135,23 @@ export default {
   watch: {
     async $route(to, from) {
       if (to !== from) {
-        this.movie = await this.$store.dispatch('movies/getMovie', this.getParams[0]);
-        this.video = await this.$store.dispatch('movies/getMovieVideo', this.getParams[0]);
-        this.$emit('updateHead')
+        await this.getData();
+        this.$emit('updateHead');
         this.detailPage = 0;
       }
     },
   },
   async mounted() {
     let self = this;
-    this.movie = await this.$store.dispatch('movies/getMovie', this.getParams[0]);
-    this.video = await this.$store.dispatch('movies/getMovieVideo', this.getParams[0]);
+    await this.getData();
     self.$emit('updateHead')
   },
   methods: {
-
+    async getData() {
+      let type = this.$route.name;
+      this.movie = await this.$store.dispatch(`movies/getMovie`, {id: this.getParams[0], type: type});
+      this.video = await this.$store.dispatch(`movies/getMovieVideo`, {id: this.getParams[0], type: type});
+    },
     checkRun(runtime) {
       return `${Math.floor(runtime / 60)} час ${runtime % 60} минут`;
     },

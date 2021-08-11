@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/index.vue'
 import movie from '@/views/movie'
-import tv from '@/views/tv'
 import categories from '@/views/categories'
 import category from '@/views/category'
 import Buy from '@/views/buy'
@@ -52,7 +51,7 @@ const routes = [
       {
         path: 'tv/:id',
         name: 'tv',
-        component: tv
+        component: movie
       },
     ]
   },
