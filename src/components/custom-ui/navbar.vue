@@ -14,9 +14,7 @@
     </svg>
     <div class="list py-5 flex items-center relative">
       <nav-item link="Home" text="Мое кино"/>
-      <nav-item link="Buy" text="Магазин"/>
       <nav-item link="List" text="Буду смотреть"/>
-      <nav-item link="Purchase" text="Покупка"/>
       <div :class="show ? 'absolute' : ''" >
         <svg v-if="!show" class="HeaderContent__icon--39VdR SearchButton__search-icon--2cYx5 ml-5" data-tid="12e1b679"
              height="1.5rem" version="1.1" viewBox="0 0 24 24"
@@ -91,7 +89,9 @@
         </div>
       </div>
     </div>
-    <div class="rounded-full bg-white ">100</div>
+    <div class=" py-1  px-2 rounded bg-white ">
+      <button @click="open()">{{getUser ? `${getUser.name}` : 'Войти'}}</button>
+    </div>
   </div>
 </template>
 
@@ -106,14 +106,22 @@ export default {
     return {
       search: null,
       show: false,
-      data: null
+      data: null,
+      showModal: false,
     }
   },
   components: {
-    navItem
+    navItem,
   },
   props: {
     bgColor: String
+  },
+  watch:{
+  },
+  computed: {
+    getUser() {
+      return this.$store.state.auth.user;
+    },
   },
   methods: {
     async searchMulti() {
@@ -126,6 +134,9 @@ export default {
       if (vote >= 6.0 && vote < 8.0) return str+ ' bg-yellow-600'
       if (vote >= 5.0 && vote < 6.0) return str+' bg-gray-600'
       if (vote < 5.0) return str+' bg-red-600'
+    },
+    open() {
+      this.$emit('select-modal')
     }
   }
 }

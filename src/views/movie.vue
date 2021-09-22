@@ -4,7 +4,7 @@
          :class="detailPage !== 0 ? 'filter blur-3xl brightness-50 transition duration 300' : ''"
          :style="`background-image: url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`">
       <youtube-vue v-if="video && detailPage === 0" ref="youtube" :videoid="video" :autoplay="1"
-                   class="absolute -right-4 -top-20 h-120v w-4/5 	" :controls="1" :rel="0" :fs="0"
+                   class="absolute -right-10 -top-20 h-120v w-4/5 	pointer-events-none" :controls="0" :rel="0" :fs="0"
                    :loop="1" :playlist="video"/>
     </div>
     <svg @click="$router.push({name: 'Home'})"
@@ -77,17 +77,22 @@
       <div class="text-overview font-sans mt-5 leading-6 text-left">
         {{ movie.overview.split(' ').splice(0, 30).join(' ') }}...
       </div>
-      <button class="bg-button-play text-white p-3 rounded items-center flex mt-3">
-        <img
-          :src="require('@/assets/play.svg')" class="w-4 inline mr-2" alt=""/>Смотреть фильм
-      </button>
+      <div class="flex">
+        <button class="bg-button-play text-white p-3 rounded items-center flex mt-3">
+          <img
+            :src="require('@/assets/play.svg')" class="w-4 inline mr-2" alt=""/>Смотреть фильм
+        </button>
+        <button @click="addOrDelete()" class="bg-content-bg flex  mt-3 items-center justify-center px-4 py-2 ml-2 rounded">
+          <svg width="18px" height="18px" :style="`${inList ? 'fill: #fff' : 'fill: inherit; stroke: white'}`" fill="#fff" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-tid="43a72e14 1fd01d7e" data-tid-prop="1fd01d7e"><path d="M4 2h10v14l-5-3-5 3z"></path></svg>
+        </button>
+      </div>
     </div>
     <transition name="slide-fade">
       <seasons v-if="detailPage===1" class="absolute top-20 left-0 z-30" :data="movie"></seasons>
     </transition>
     <transition name="slide-fade">
     <Details v-if="detailPage===2" class="absolute top-20 left-0 z-30" :data="movie"></Details>
-  </transition>
+    </transition>
     <div @click="muteOrUnmute" v-if="video && detailPage ===0"
          class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">
       <img v-if="!mute" :src="require('@/assets/mute.svg')" alt="">
@@ -116,27 +121,21 @@ export default {
       text: 'some',
       video: null,
       mute: true,
-      detailPage: 0
+      inList: null,
+      titlePage: null,
+      detailPage: 0,
     }
-  },
-  head: {
-    title: async function () {
-      return {
-        inner: this.movie.title || this.movie.name
-      }
-    },
   },
   computed: {
     getParams() {
       let id = this.$route.params.id.toString();
       return id.split('-');
-    }
+    },
   },
   watch: {
     async $route(to, from) {
       if (to !== from) {
         await this.getData();
-        this.$emit('updateHead');
         this.detailPage = 0;
       }
     },
@@ -144,6 +143,10 @@ export default {
   async mounted() {
     let self = this;
     await this.getData();
+    await this.$store.dispatch('list/GET_WATCHLIST');
+
+    let type = this.$route.name === 'movie' ? 'listMovie' : 'listTV';
+    this.inList = this.$store.getters["list/inList"](+this.getParams[0], type);
     self.$emit('updateHead')
   },
   methods: {
@@ -151,6 +154,13 @@ export default {
       let type = this.$route.name;
       this.movie = await this.$store.dispatch(`movies/getMovie`, {id: this.getParams[0], type: type});
       this.video = await this.$store.dispatch(`movies/getMovieVideo`, {id: this.getParams[0], type: type});
+      this.titlePage = this.movie.title;
+    },
+    addOrDelete() {
+      let type = this.$route.name === 'movie' ? 'listMovie' : 'listTV',
+          action = this.inList ? 'delete' : 'save';
+      this.$store.dispatch('list/CHANGE_WATCHLIST', {action:action, id: this.getParams[0], type: type}).then(val=> this.inList = val)
+      this.$store.dispatch('list/GET_WATCHLIST');
     },
     checkRun(runtime) {
       return `${Math.floor(runtime / 60)} час ${runtime % 60} минут`;
@@ -160,7 +170,6 @@ export default {
       this.mute = !this.mute;
     },
     changeDetail() {
-      console.log(1)
     },
     movieStatus(vote) {
       let str = 'p-1 rounded text-gray-100'

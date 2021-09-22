@@ -5,13 +5,20 @@ import store from './store'
 import './assets/tailwind.css';
 import VueSplide from "@splidejs/vue-splide";
 import '@splidejs/splide/dist/css/themes/splide-default.min.css';
-import VueHead from "vue-head";
+import axios from "axios";
+import VueMeta from "vue-meta";
 
 Vue.config.productionTip = false
 
 Vue.use(VueSplide)
 
-Vue.use(VueHead);
+Vue.use(VueMeta)
+
+let token = localStorage.getItem('user-token');
+if(token)  {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
 
 new Vue({
   router,

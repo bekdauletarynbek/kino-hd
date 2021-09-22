@@ -20,7 +20,8 @@ export default {
     return {
       options: {
         rewind: true,
-        perPage: 5,
+        autoWidth: true,
+        perMove: 2,
         gap: '1.1rem',
         pagination: false
       },

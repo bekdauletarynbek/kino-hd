@@ -48,8 +48,8 @@ export default {
       console.log('scrool', window.innerHeight + window.scrollY);
       console.log('document', document.body.offsetHeight);
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        let {data} = await ahttp.get(`/movie/popular?${api}&with_genres=${params[0]}&page=${this.page}`);
         this.page+=1;
+        let {data} = await ahttp.get(`/movie/popular?${api}&with_genres=${params[0]}&page=${this.page}`);
         this.data.push(...data.results)
       }
     }

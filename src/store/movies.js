@@ -9,7 +9,6 @@ export default {
     },
     mutations: {
         SET_PROPERTY(state, value) {
-            console.log(value)
             state[value.key] = value.value;
         }
     },
@@ -30,12 +29,10 @@ export default {
         },
         async getMovie(context, {id, type}) {
             let {data} = await ahttp.get(`/${type}/${id}?${api}&append_to_response=credits`)
-            console.log(data)
             return data
         },
         async getMovieVideo(context, {id, type}) {
             let {data} = await ahttp.get(`/${type}/${id}/videos?${api}`)
-            console.log(data.results)
             if(!data.results.length) return null;
             return data.results[0].key
         },

@@ -4,9 +4,7 @@ import Home from '@/views/index.vue'
 import movie from '@/views/movie'
 import categories from '@/views/categories'
 import category from '@/views/category'
-import Buy from '@/views/buy'
 import List from '@/views/list'
-import Purchase from '@/views/purchases'
 
 Vue.use(VueRouter)
 
@@ -24,19 +22,9 @@ const routes = [
     ]
   },
   {
-    path: '/buy',
-    name: 'Buy',
-    component: Buy
-  },
-  {
     path: '/watchlist',
     name: 'List',
     component: List
-  },
-  {
-    path: '/purchases',
-    name: 'Purchase',
-    component: Purchase
   },
   {
     path: '/',

@@ -3,6 +3,9 @@ import Vuex from 'vuex'
 import movies from './movies'
 import tv from './tv'
 import categories from "./categories";
+import auth from "@/store/auth";
+import user from "@/store/user";
+import list from '@/store/list';
 
 Vue.use(Vuex)
 
@@ -16,6 +19,9 @@ export default new Vuex.Store({
   modules: {
     movies,
     tv,
-    categories
+    categories,
+    auth,
+    user,
+    list
   }
 })

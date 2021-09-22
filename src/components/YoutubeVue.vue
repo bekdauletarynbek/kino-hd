@@ -13,6 +13,7 @@ export default {
         videoid : { type:String, required:true },
         playlist : { type:String},
       controls: {type: Number, default: 1, validator:(v)=> Number(v) ===0 || Number(v) ===1},
+      cc_load_policy: {type: Number, default: 1, validator:(v)=> Number(v) ===0 || Number(v) ===1},
         loop : { type:Number, default:1, validator: (v) => Number(v)===0||Number(v)===1 }
     },
     data() {
@@ -25,7 +26,8 @@ export default {
             autoplay:this.autoplay,
             loop:this.loop,
             controls: this.controls,
-            playlist: this.playlist
+            playlist: this.playlist,
+          cc_load_policy: this.cc_load_policy
         }
       console.log(this.$refs.player)
         this.player = YouTubePlayer('youtube-vue-player-soma', {
