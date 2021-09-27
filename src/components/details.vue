@@ -10,8 +10,8 @@
       {{data.overview}}
     </div>
   </div>
-  <div class="px-32 w-1/2 flex justify-between mt-5 text-gray-100 text-sm text-left">
-    <div class="">
+  <div class="px-32 flex justify-between mt-5 text-gray-100 text-sm text-left">
+    <div class="mr-10">
       <p  class="text-gray-300 text-xs font-medium mb-2">В главных ролях</p>
       <p v-for="actor in getActors()" :key="actor.id">{{actor.name}}</p>
       <p  class="text-gray-300 text-xs font-medium mb-2 mt-6" v-if="getDirector()">Режиссеры</p>
