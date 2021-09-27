@@ -89,7 +89,7 @@
         </div>
       </div>
     </div>
-    <div class=" py-1  px-2 rounded bg-white ">
+    <div class=" py-1  px-2 rounded bg-white " v-show="false">
       <button @click="open()">{{getUser ? `${getUser.name}` : 'Войти'}}</button>
     </div>
   </div>
