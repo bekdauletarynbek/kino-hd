@@ -1,0 +1,207 @@
+<template>
+  <div class="relative  h-90v overflow-hidden z-0">
+    <div class=" h-90v bg-right bg-no-repeat bg-contain z-0 relative  overflow-hidden"
+         :class="detailPage !== 0 ? 'filter blur-3xl brightness-50 transition duration 300' : ''"
+         :style="`background-image: url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`">
+      <youtube-vue v-if="video && detailPage === 0" ref="youtube" :videoid="video" :autoplay="1"
+                   class="absolute -right-10 -top-20 h-120v w-4/5 	pointer-events-none" :controls="0" :rel="0" :fs="0"
+                   :loop="1" :playlist="video"/>
+    </div>
+    <svg @click="$router.push({name: 'Home'})"
+         class="absolute top-5 right-10 w-6 z-40" fill="white"
+         version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+         y="0px"
+         viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512.001 512.001" xml:space="preserve">
+<g>
+	<g>
+		<path d="M284.286,256.002L506.143,34.144c7.811-7.811,7.811-20.475,0-28.285c-7.811-7.81-20.475-7.811-28.285,0L256,227.717
+			L34.143,5.859c-7.811-7.811-20.475-7.811-28.285,0c-7.81,7.811-7.811,20.475,0,28.285l221.857,221.857L5.858,477.859
+			c-7.811,7.811-7.811,20.475,0,28.285c3.905,3.905,9.024,5.857,14.143,5.857c5.119,0,10.237-1.952,14.143-5.857L256,284.287
+			l221.857,221.857c3.905,3.905,9.024,5.857,14.143,5.857s10.237-1.952,14.143-5.857c7.811-7.811,7.811-20.475,0-28.285
+			L284.286,256.002z"/>
+	</g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+      <g>
+</g>
+</svg>
+    <div class="absolute flex w-full justify-center z-30 top-4 ">
+      <nav-item-movie class="mr-4" name="О фильме" :status="detailPage === 0"
+                      @click.native="detailPage = 0; mute = true"/>
+      <nav-item-movie v-if="$route.name === 'tv'" class="mr-4" name="Сезоны и серии" :status="detailPage === 1"
+                      @click.native="detailPage = 1; mute = true"/>
+      <nav-item-movie name="Детали" :status="detailPage === 2" @click.native="detailPage = 2"/>
+    </div>
+
+    <div class="ft z-10"></div>
+    <div class="absolute top-8 left-0 z-20 h-full w-2/4 p-12" v-if="detailPage === 0">
+      <div class="flex  items-center">
+        <img class="w-40 rounded" :src="`https://image.tmdb.org/t/p/w300${movie.poster_path}`" alt="">
+        <div class=" text-white ml-5 fans-serif text-left">
+          <p class="whitespace-pre-line font-bold text-3xl mb-3"> {{ movie.title || movie.name}} </p>
+          <div class="text-gray-400	w-96">
+            <span :class="movieStatus(movie.vote_average)" class="mr-2">{{ movie.vote_average.toFixed(1) }}</span>
+            <span>{{ $route.name !== 'movie' ? movie.first_air_date.split('-')[0] : movie.release_date.split('-')[0] }}</span>
+            <span v-for="genre in movie.genres.slice(0,2)" :key="genre.id"> {{ genre.name }} </span>
+            <span>{{$route.name === 'movie' ?  checkRun(movie.runtime) : movie.seasons.length + ' сезонов'}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="text-overview font-sans mt-5 leading-6 text-left">
+        {{ movie.overview.split(' ').splice(0, 30).join(' ') }}...
+      </div>
+      <div class="flex">
+        <button class="bg-button-play text-white p-3 rounded items-center flex mt-3">
+          <img
+            :src="require('@/assets/play.svg')" class="w-4 inline mr-2" alt=""/>Смотреть фильм
+        </button>
+        <button @click="addOrDelete()" class="bg-content-bg flex  mt-3 items-center justify-center px-4 py-2 ml-2 rounded">
+          <svg width="18px" height="18px" :style="`${inList ? 'fill: #fff' : 'fill: inherit; stroke: white'}`" fill="#fff" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-tid="43a72e14 1fd01d7e" data-tid-prop="1fd01d7e"><path d="M4 2h10v14l-5-3-5 3z"></path></svg>
+        </button>
+      </div>
+    </div>
+    <transition name="slide-fade">
+      <seasons v-if="detailPage===1" class="absolute top-20 left-0 z-30" :data="movie"></seasons>
+    </transition>
+    <transition name="slide-fade">
+    <Details v-if="detailPage===2" class="absolute top-20 left-0 z-30" :data="movie"></Details>
+    </transition>
+    <div @click="muteOrUnmute" v-if="video && detailPage ===0"
+         class="absolute right-10 bottom-5 bg-gray-500 p-3 rounded-full w-12">
+      <img v-if="!mute" :src="require('@/assets/mute.svg')" alt="">
+      <img v-else :src="require('@/assets/unmute.svg')" alt="">
+    </div>
+  </div>
+</template>
+
+<script>
+import YoutubeVue from "@/components/YoutubeVue";
+import navItemMovie from '@/components/custom-ui/nav-item-movie'
+import Details from "@/components/details";
+import seasons from "@/components/seasons";
+
+export default {
+  name: "movie",
+  components: {
+    YoutubeVue,
+    navItemMovie,
+    Details,
+    seasons
+  },
+  data() {
+    return {
+      movie: {},
+      text: 'some',
+      video: null,
+      mute: true,
+      inList: null,
+      titlePage: null,
+      detailPage: 0,
+    }
+  },
+  computed: {
+    getParams() {
+      let id = this.$route.params.id.toString();
+      return id.split('-');
+    },
+  },
+  watch: {
+    async $route(to, from) {
+      if (to !== from) {
+        await this.getData();
+        this.detailPage = 0;
+      }
+    },
+  },
+  async mounted() {
+    let self = this;
+    await this.getData();
+    await this.$store.dispatch('list/GET_WATCHLIST');
+
+    let type = this.$route.name === 'movie' ? 'listMovie' : 'listTV';
+    this.inList = this.$store.getters["list/inList"](+this.getParams[0], type);
+    self.$emit('updateHead')
+  },
+  methods: {
+    async getData() {
+      let type = this.$route.name;
+      this.movie = await this.$store.dispatch(`movies/getMovie`, {id: this.getParams[0], type: type});
+      this.video = await this.$store.dispatch(`movies/getMovieVideo`, {id: this.getParams[0], type: type});
+      this.titlePage = this.movie.title;
+    },
+    addOrDelete() {
+      let type = this.$route.name === 'movie' ? 'listMovie' : 'listTV',
+          action = this.inList ? 'delete' : 'save';
+      this.$store.dispatch('list/CHANGE_WATCHLIST', {action:action, id: this.getParams[0], type: type}).then(val=> this.inList = val)
+      this.$store.dispatch('list/GET_WATCHLIST');
+    },
+    checkRun(runtime) {
+      return `${Math.floor(runtime / 60)} час ${runtime % 60} минут`;
+    },
+    muteOrUnmute() {
+      this.mute ? this.$refs.youtube.player.mute() : this.$refs.youtube.player.unMute();
+      this.mute = !this.mute;
+    },
+    changeDetail() {
+    },
+    movieStatus(vote) {
+      let str = 'p-1 rounded text-gray-100'
+      if (vote >= 8.0) return str+' bg-green-600'
+      if (vote >= 6.0 && vote < 8.0) return str+ ' bg-yellow-600'
+      if (vote >= 5.0 && vote < 6.0) return str+' bg-gray-600'
+      if (vote < 5.0) return str+' bg-red-600'
+    }
+  }
+}
+</script>
+
+<style scoped>
+.ft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 49%, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.7), rgba(57, 61, 62, 0.003) 100%);
+  z-index: 1;
+  width: 60%;
+  height: 100%;
+}
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+
+.slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active до версии 2.1.8 */
+{
+  transform: translateY(20px);
+  opacity: 0;
+}
+</style>
